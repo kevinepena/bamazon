@@ -109,7 +109,7 @@ function start() {
                         ],
                         function (error) {
                             if (error) throw err;
-                            console.log("Total : " + ((chosenItem.price) * answer.quantity));
+                            console.log("Total : $" + ((chosenItem.price) * answer.quantity));
                             start();
                         }
                     );
