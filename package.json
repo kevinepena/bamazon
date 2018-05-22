@@ -22,5 +22,6 @@
     "cli-table": "^0.3.1",
     "inquirer": "^5.2.0",
     "mysql": "^2.15.0"
-  }
+  },
+  "devDependencies": {}
 }
