@@ -3,7 +3,6 @@ var inquirer = require("inquirer");
 const Table = require('cli-table');
 const chalk = require('chalk');
 const log = console.log;
-const table = new Table();
 
 // create the connection information for the sql database
 var connection = mysql.createConnection({
@@ -25,8 +24,6 @@ var connection = mysql.createConnection({
 
 // connect to the mysql server and sql database
 connection.connect(function (err) {
-
-
 
     if (err) throw err;
     // run the start function after the connection is made to prompt the user
@@ -80,13 +77,19 @@ function start() {
 
 function listAll() {
 
+    const saleTable = new Table();
     connection.query("SELECT * FROM products", function (err, results) {
 
-        table.push(["Product ID", "Product", "Price", "Quantity"]);
+        saleTable.push(["Product ID", "Product", "Price", "Quantity"]);
         for (var i = 0; i < results.length; i++) {
-            table.push([results[i].id, results[i].productName, ("$" + (results[i].price)), results[i].stockQuantity]);
+            if (results[i].stockQuantity < 5) {
+                saleTable.push([chalk.blue(results[i].id), results[i].productName, (chalk.green("$") + (results[i].price)), chalk.red(results[i].stockQuantity)]);
+            }
+            else {
+                saleTable.push([chalk.blue(results[i].id), results[i].productName, (chalk.green("$") + (results[i].price)), results[i].stockQuantity])
+            };
         }
-        console.log(table.toString());
+        console.log(saleTable.toString());
     });
 
     start();
@@ -206,16 +209,17 @@ function addInventory() {
 }
 
 function lowInventory() {
+
+    const lowTable = new Table();
     connection.query("SELECT * FROM products", function (err, results) {
 
-        table.push(["Product ID", "Product", "Price", "Quantity"]);
+        lowTable.push(["Product ID", "Product", "Price", "Quantity"]);
         for (var i = 0; i < results.length; i++) {
-            if (results[i].stockQuantity < 5)
-            {
-                table.push([results[i].id, results[i].productName, ("$" + (results[i].price)), results[i].stockQuantity]);
+            if (results[i].stockQuantity < 5) {
+                lowTable.push([chalk.blue(results[i].id), results[i].productName, (chalk.green("$") + (results[i].price)), chalk.red(results[i].stockQuantity)]);
             }
         }
-        console.log(table.toString());
+        console.log(lowTable.toString());
     });
 
     start();
